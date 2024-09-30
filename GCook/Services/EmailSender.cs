@@ -3,7 +3,7 @@ using System.Net.Mail;
 
 namespace GCook.Services;
 
-public class EmailSender: IEmailSender
+public class EmailSender : IEmailSender
 {
     public async Task SendEmailAsync(string emailAddress, string subject, string htmlMessage)
     {
@@ -15,7 +15,7 @@ public class EmailSender: IEmailSender
             EnableSsl = true,
             Credentials = new NetworkCredential(mail, pw)
         };
-
+        
         MailMessage sendMail = new(
             from: mail,
             to: emailAddress,

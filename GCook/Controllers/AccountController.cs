@@ -1,8 +1,8 @@
-using GCook.Services;
 using GCook.ViewModels;
+using GCook.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GCook.Controllers;
+namespace GalloFlix.Controllers;
 
 public class AccountController : Controller
 {
@@ -12,9 +12,9 @@ public class AccountController : Controller
     public AccountController(
         ILogger<AccountController> logger,
         IUsuarioService usuarioService
-    )
+        )
     {
-        //Url.Action
+        // Url.Action
         _logger = logger;
         _usuarioService = usuarioService;
     }
@@ -29,6 +29,7 @@ public class AccountController : Controller
         return View(login);
     }
 
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginVM login)
@@ -43,7 +44,7 @@ public class AccountController : Controller
             if (result.IsNotAllowed)
                 ModelState.AddModelError(string.Empty, "Sua conta não está confirmada, verifique seu email!!");
             else
-                ModelState.AddModelError(string.Empty, "Usuario e/ou Senha Inválidos!!!");
+                ModelState.AddModelError(string.Empty, "Usuário e/ou Senha Inválidos!!!");
         }
         return View(login);
     }
@@ -52,7 +53,7 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        await _usuarioService.LogoffUsuario();
+       await _usuarioService.LogoffUsuario();
         return RedirectToAction("Index", "Home");
     }
 
@@ -72,7 +73,7 @@ public class AccountController : Controller
         {
             var result = await _usuarioService.RegistrarUsuario(register);
             if (result != null)
-                foreach (var error in result)
+                foreach(var error in result)
                 {
                     ModelState.AddModelError(string.Empty, error);
                 }

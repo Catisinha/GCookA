@@ -9,6 +9,7 @@ dotnet ef migrations add InitialCreate
 
 dotnet ef database update
 
+dotnet watch run
 
 
 1 - Criar uma pasta Helpers

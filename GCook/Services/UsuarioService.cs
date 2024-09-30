@@ -6,26 +6,24 @@ using Microsoft.EntityFrameworkCore;
 using GCook.Helpers;
 using GCook.Models;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
 using System.Text.Encodings.Web;
-
+using System.Text;
 
 namespace GCook.Services;
 
 public class UsuarioService : IUsuarioService
 {
-    private readonly AppContext _contexto;
+    private readonly AppDbContext _contexto;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly IHttpContextAccessor _httContextAcessor;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserStore<IdentityUser> _userStore;
     private readonly IUserEmailStore<IdentityUser> _emailStore;
     private readonly IWebHostEnvironment _hostEnvironment;
     private readonly IEmailSender _emailSender;
     private readonly ILogger<UsuarioService> _logger;
 
-
-     public UsuarioService(
+    public UsuarioService(
         AppDbContext contexto,
         SignInManager<IdentityUser> signInManager,
         UserManager<IdentityUser> userManager,
@@ -66,9 +64,9 @@ public class UsuarioService : IUsuarioService
         {
             return null;
         }
-        var userAccount = await _userManager.FindByEmailAsync(userId);
+        var userAccount = await _userManager.FindByIdAsync(userId);
         var usuario = await _contexto.Usuarios.Where(u => u.UsuarioId == userId).SingleOrDefaultAsync();
-        var perfis = string.Join(", ", await _userManager.GetRolesAsync(userAccount));
+        var perfis = string.Join(",", await _userManager.GetRolesAsync(userAccount));
         var admin = await _userManager.IsInRoleAsync(userAccount, "Administrador");
         UsuarioVM usuarioVM = new()
         {
@@ -93,7 +91,7 @@ public class UsuarioService : IUsuarioService
             if (user != null)
                 userName = user.UserName;
         }
-        
+
         var result = await _signInManager.PasswordSignInAsync(
             userName, login.Senha, login.Lembrar, lockoutOnFailure: true
         );
@@ -122,7 +120,7 @@ public class UsuarioService : IUsuarioService
 
         if (result.Succeeded)
         {
-            _logger.LogInformation($"Novo usuário registrado com o email {user.Email}.");
+            _logger.LogInformation($"Novo usuário registrado com o email {user.Email}");
 
             var userId = await _userManager.GetUserIdAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -131,19 +129,19 @@ public class UsuarioService : IUsuarioService
 
             await _userManager.AddToRoleAsync(user, "Usuário");
 
-            await _emailSender.SendEmailAsync(registro.Email, "Gcook - Criação de Conta", GetConfirmEmailHtml(HtmlEncoder.Default.Encode(url)));
+            await _emailSender.SendEmailAsync(registro.Email, "GCook - Criação de Conta", GetConfirmEmailHtml(HtmlEncoder.Default.Encode(url)));
 
             // Cria a conta pessoal do usuário
             Usuario usuario = new()
             {
-                UsuarioId= userId,
+                UsuarioId = userId,
                 DataNascimento = registro.DataNascimento ?? DateTime.Now,
                 Nome = registro.Nome
             };
             if (registro.Foto != null)
             {
                 string fileName = userId + Path.GetExtension(registro.Foto.FileName);
-                string uploads = Path.Combine(_hostEnvironment.WebRootPath, @"img\usuarios");
+                string uploads = Path.Combine(_hostEnvironment.WebRootPath, @"img/usuarios");
                 string newFile = Path.Combine(uploads, fileName);
                 using (var stream = new FileStream(newFile, FileMode.Create))
                 {
@@ -164,7 +162,6 @@ public class UsuarioService : IUsuarioService
         }
         return errors;
     }
-
 
     private string GetConfirmEmailHtml(string url)
     {
@@ -426,6 +423,5 @@ public class UsuarioService : IUsuarioService
         ";
         return email;
     }
-
-
 }
+

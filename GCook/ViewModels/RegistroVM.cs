@@ -21,15 +21,15 @@ public class RegistroVM
     public string Email { get; set; }
 
     [DataType(DataType.Password)]
-    [Display(Name = "Senha de Acesso", Prompt = "Informe uma Senha para Acesso")]
+    [Display(Name = "Senha de Acesso", Prompt = "Informe uma Senha de Acesso")]
     [Required(ErrorMessage = "Por favor, informe sua Senha de Acesso")]
-    [StringLength(20, MinimumLength = 6, ErrorMessage = "A Senha deve possuir no mínimo 6 e no máximo 20 caracteres")]
-    public string Senha { get; set; }
+    [StringLength(20, MinimumLength = 6, ErrorMessage = "A Senha deve possuir no minimo 6 e no máximo 20 caracteres")]
+    public string Senha { get; set; } = null;
 
     [DataType(DataType.Password)]
     [Display(Name = "Confirmar Senha de Acesso", Prompt = "Confirme sua Senha de Acesso")]
     [Compare("Senha", ErrorMessage = "As Senhas não Conferem.")]
-    public string ConfirmacaoSenha { get; set; }
+    public string ConfirmacaoSenha { get; set; } = null;
 
     public IFormFile Foto { get; set; }
 

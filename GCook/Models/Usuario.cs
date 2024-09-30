@@ -11,7 +11,7 @@ public class Usuario
     public string UsuarioId { get; set; }
     [ForeignKey("UsuarioId")]
     public IdentityUser ContaUsuario { get; set; }
-    
+
     [Required]
     [StringLength(50)]
     public string Nome { get; set; }
@@ -21,4 +21,5 @@ public class Usuario
 
     [StringLength(300)]
     public string Foto { get; set; }
+    
 }
